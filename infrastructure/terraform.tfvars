@@ -1,0 +1,9 @@
+k8s_host       = "https://127.0.0.1:55510"
+k8s_token      = "qht7ku.j9fcmuqai18pwr96"
+k8s_ca_cert    = "C:/Users/Lenovo/.minikube/ca.crt"
+docker_image   = "farahr/my-django-app"
+namespace      = "django-namespace"
+replicas       = 3
+container_port = 8000
+service_port   = 80
+service_type   = "LoadBalancer"

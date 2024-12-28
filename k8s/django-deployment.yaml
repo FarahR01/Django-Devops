@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: django
+  template:
+    metadata:
+      labels:
+        app: django
+    spec:
+      containers:
+        - name: django
+          image: farahr/my-django-app  # L'image Docker de votre application Django
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - secretRef:
+                name: django-secret  # Référence au Secret Kubernetes
+            - configMapRef:
+                name: django-configmap  # Référence au ConfigMap Kubernetes

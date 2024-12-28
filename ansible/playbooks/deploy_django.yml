@@ -1,0 +1,48 @@
+---
+- name: Deploy Django application on Kubernetes
+  hosts: localhost
+  become: false
+  collections:
+    - kubernetes.core
+  vars_files:
+    - ../vars.yml
+  tasks:
+    - name: Deploy Django application as a Kubernetes deployment
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: "{{ django_app_name }}"
+            namespace: "{{ kubernetes_namespace }}"
+          spec:
+            replicas: 3
+            selector:
+              matchLabels:
+                app: "{{ django_app_name }}"
+            template:
+              metadata:
+                labels:
+                  app: "{{ django_app_name }}"
+              spec:
+                containers:
+                  - name: "{{ django_app_name }}"
+                    image: "{{ django_image }}"
+                    ports:
+                      - containerPort: 8000
+                    env:
+                      - name: DATABASE_URL
+                        value: "postgres://{{ postgres_user }}:{{ postgres_password }}@postgres-db:5432/{{ postgres_db }}"
+
+    - name: Expose Django application as a service
+      kubernetes.core.k8s_service:
+        state: present
+        name: "{{ django_app_name }}"
+        namespace: "{{ kubernetes_namespace }}"
+        selector:
+          app: "{{ django_app_name }}"
+        ports:
+          - port: 80
+            targetPort: 8000
+        type: LoadBalancer

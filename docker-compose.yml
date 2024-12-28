@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:14
+    container_name: postgres-container
+    environment:
+      POSTGRES_DB: django_Ecommerce
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 20908503
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - django-net
+
+  web:
+    build: .
+    container_name: django-container
+    command: ["gunicorn", "--bind", "0.0.0.0:8000", "ecom.wsgi:application"]
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+    environment:
+      DB_NAME: django_Ecommerce
+      DB_USER: postgres
+      DB_PASSWORD: 20908503
+      DB_HOST: db  # This refers to the PostgreSQL service
+      DB_PORT: 5432
+      SECRET_KEY: ydtkkfiukgfdktuyitugds
+      PAYPAL_RECEIVER_EMAIL: business@codemytest.com
+    networks:
+      - django-net
+
+networks:
+  django-net:
+    driver: bridge
+
+volumes:
+  postgres-data:
+    driver: local

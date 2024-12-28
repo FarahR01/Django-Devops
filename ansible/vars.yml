@@ -1,0 +1,16 @@
+# vars.yml
+
+# Kubernetes namespace
+kubernetes_namespace: "django-namespace"
+
+# Django application details
+django_app_name: "ecom"
+django_image: "farahr/my-django-app"  # Replace with your Docker image name
+
+# PostgreSQL database details
+postgres_user: "postgres"
+postgres_password: "20908503"
+postgres_db: "django_Ecommerce"
+
+# Kubernetes context (if needed for multi-cluster environments)
+kubernetes_context: "minikube"
